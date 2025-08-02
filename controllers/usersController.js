@@ -66,6 +66,23 @@ const usersController = {
             return res.status(400).json({ error: 'Passwords do not match.'});
         }
 
+        // Email format check
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.status(400).json({ error: 'Invalid email format.' });
+        }
+
+        // Password complexity: at least 1 uppercase, 1 lowercase, 1 digit, 1 special char
+        const pwComplexity = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/;
+        if (!pwComplexity.test(password)) {
+            return res.status(400).json({ error: 'Password must include uppercase, lowercase, number, and special character.' });
+        }
+
+        // Username allowed characters (alphanumeric, underscores)
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        if (!usernameRegex.test(username)) {
+            return res.status(400).json({ error: 'Username can only contain letters, numbers, and underscores.' });
+        }
         try {
             let user = await User.findOne({ username });
             if(user) {
