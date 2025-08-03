@@ -132,14 +132,23 @@ const userManagementController = {
     // Get users managed by Role A (for Role A managers)
     getManagedUsers: async (req, res) => {
         try {
-            const managerId = req.session.user._id;
-            const users = await User.find({ 
-                createdBy: managerId 
-            }, { password: 0 });
+            const currentUser = req.session.user;
+            let users;
 
+            if (currentUser.role === 'Role A') {
+                // Role A can see all Role B users.
+                users = await User.find({ role: 'Role B' }, { password: 0 }).populate('createdBy', 'username');
+            } else if (currentUser.role === 'Administrator') {
+                // Administrators can see all users.
+                users = await User.find({}, { password: 0 }).populate('createdBy', 'username');
+            } else {
+                // This case should not be reached due to the `requireRoleA` middleware
+                return res.status(403).json({ error: 'Insufficient permissions' });
+            }
+            
             res.status(200).json({ users });
         } catch (err) {
-            console.error(err);
+            console.error('Error in getManagedUsers:', err);
             res.status(500).json({ error: err.message });
         }
     },

@@ -58,17 +58,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load users
     async function loadUsers() {
         try {
-            console.log('Loading users...');
-            const response = await fetch('/api/users');
+            const userRole = localStorage.getItem('userRole');
+            const endpoint = userRole === 'Administrator' ? '/api/users' : '/api/users/managed';
+            
+            console.log(`Loading users from ${endpoint}...`);
+            const response = await fetch(endpoint);
             console.log('Response status:', response.status);
             
             const result = await response.json();
             console.log('Response result:', result);
 
             if (response.ok) {
-                if (result && result.data) {
-                    console.log('Users found:', result.data.length);
-                    displayUsers(result.data);
+                if (result && result.users) {
+                    console.log('Users found:', result.users.length);
+                    displayUsers(result.users);
                 } else {
                     console.error('No users property in response:', result);
                     utils.inform(true, 'Invalid response format from server');
