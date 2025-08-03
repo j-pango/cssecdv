@@ -66,15 +66,27 @@
                     <button type="submit">Create User</button>
                 </form>
             </div>
+            {{/if}}
+            {{/if}}
             <!-- User List Section -->
             <div class="section">
                 <h2>User List</h2>
                 <div class="user-filters">
                     <select id="role-filter">
+                        {{#if user}}
+                        {{#if (eq user.role "Administrator")}}
                         <option value="">All Roles</option>
                         <option value="Administrator">Administrator</option>
                         <option value="Role A">Role A</option>
                         <option value="Role B">Role B</option>
+                        {{/if}}
+                        {{/if}}
+
+                        {{#if user}}
+                        {{#if (eq user.role "Role A")}}
+                        <option value="Role B">Role B</option>
+                        {{/if}}
+                        {{/if}}
                     </select>
                     <select id="status-filter">
                         <option value="">All Status</option>
@@ -88,6 +100,8 @@
             </div>
 
             <!-- Audit Logs Section -->
+            {{#if user}}
+            {{#if (eq user.role "Administrator")}}
             <div class="section">
                 <h2>Audit Logs</h2>
                 <div class="log-filters">
@@ -107,9 +121,9 @@
                     <!-- Audit logs will be loaded here -->
                 </div>
             </div>
+            {{/if}}
+            {{/if}}
         </div>
-        {{/if}}
-        {{/if}}
     </div>
 
     <script src="js/userManagement.js" defer type="module"></script>
