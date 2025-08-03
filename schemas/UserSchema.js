@@ -18,11 +18,16 @@ const UserSchema = new mongoose.Schema(
       createdBy: { type: ObjectId, ref: 'User', default: null }, // Who created this user
       isActive: { type: Boolean, default: true },
       lastLogin: { type: Date, default: null },
-      // Legacy support for existing isAdmin field
-      isAdmin: { type: Boolean, default: false }
+      isAdmin: { type: Boolean, default: false }, // Legacy support for existing isAdmin field
+      failedLoginAttempts: { type: Number, required: true, default: 0},
+      lockoutUntil: { type: Date, default: null } // Null means not locked
     },
     { versionKey: false, timestamps: true }
   );
+
+UserSchema.methods.isLocked = function() {
+    return this.lockoutUntil && this.lockoutUntil > Date.now();
+};
 
 const User = mongoose.model('User', UserSchema);
 export default mongoose.models.User || User;
