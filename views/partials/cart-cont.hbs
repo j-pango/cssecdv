@@ -41,8 +41,11 @@
     <div id="cart-total">
         <h2>Total: ₱<span id="total-amount">{{total}}</span></h2>
     </div>
+    {{#unless (eq user.role "Administrator")}}
+    {{#unless (eq user.role "Role A")}}
     <button id="checkout-btn" class="btn">Proceed to Checkout</button>
-
+    {{/unless}}
+    {{/unless}}
     <!-- Modal for Checkout -->
     <div id="checkout-modal" class="modal">
         <div class="modal-content">
