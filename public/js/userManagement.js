@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Role selection handler
     const roleSelect = document.getElementById('role');
     const scopeGroup = document.getElementById('scope-group');
-    
+	
     roleSelect.addEventListener('change', function() {
         if (this.value === 'Role A') {
             scopeGroup.style.display = 'block';
@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('Response result:', result);
 
             if (response.ok) {
-                if (result && result.users) {
-                    console.log('Users found:', result.users.length);
-                    displayUsers(result.users);
+                if (result && result.data) {
+                    console.log('Users found:', result.data.length);
+                    displayUsers(result.data);
                 } else {
                     console.error('No users property in response:', result);
                     utils.inform(true, 'Invalid response format from server');
