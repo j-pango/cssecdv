@@ -3,20 +3,6 @@ import bcrypt from 'bcrypt';
 import { requireAdministrator, auditLog } from '../middleware/auth.js';
 
 const userManagementController = {
-    // Get all users (Administrator only)
-    getAllUsers: async (req, res) => {
-        try {
-            console.log('getAllUsers called by:', req.session.user?.username);
-            const users = await User.find({}, { password: 0 }).populate('createdBy', 'username');
-            console.log('Found users:', users.length);
-            console.log('Users data:', users);
-            res.status(200).json({ users });
-        } catch (err) {
-            console.error('Error in getAllUsers:', err);
-            res.status(500).json({ error: err.message });
-        }
-    },
-
     // Create new user (Administrator only)
     createUser: async (req, res) => {
         try {

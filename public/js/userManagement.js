@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('/api/users/create', {
+            const response = await fetch('/user-management/api/users/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData)
@@ -58,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load users
     async function loadUsers() {
         try {
-            const userRole = localStorage.getItem('userRole');
-            const endpoint = userRole === 'Administrator' ? '/api/users' : '/api/users/managed';
+            const endpoint = '/user-management/api/users';
             
             console.log(`Loading users from ${endpoint}...`);
             const response = await fetch(endpoint);
@@ -254,7 +253,7 @@ window.editUser = function(userId) {
 
 window.toggleUserStatus = async function(userId, currentStatus) {
     try {
-        const response = await fetch('/api/users/status', {
+        const response = await fetch('/user-management/api/users/status', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId })
