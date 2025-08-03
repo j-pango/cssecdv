@@ -7,7 +7,10 @@
     "test-side": "selenium-side-runner --config-file ./tests/selenium/.side.yml ./tests/selenium/tests.side", 
     "start-server": "node index.js",
     "ci": "start-server-and-test start-server http://localhost:5000 test-side",
-    "test-jest": "jest --coverage"
+    "test-jest": "jest --coverage",
+    "create-users": "node scripts/createInitialAdmin.js",
+    "create-admin": "node scripts/createInitialAdmin.js --admin-only",
+    "create-sample": "node scripts/createInitialAdmin.js --sample-users"
   },
   "author": "",
   "license": "ISC",

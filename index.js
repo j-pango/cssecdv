@@ -20,6 +20,9 @@ import loginRouter from './server/api/login.js';
 import cartRouter from './server/api/cart.js'
 import adminRouter from './server/api/admin.js'
 import profileRouter from './server/api/profile.js'
+import userManagementRouter from './server/api/userManagement.js'
+import auditRouter from './server/api/audit.js'
+import passwordRouter from './server/api/password.js'
 
 const app = express();
 const PORT = process.env.PORT;
@@ -65,6 +68,9 @@ app.use('/', cartRouter);
 app.use('/', loginRouter);
 app.use('/', adminRouter);
 app.use('/', profileRouter);
+app.use('/', userManagementRouter);
+app.use('/', auditRouter);
+app.use('/', passwordRouter);
 
 /**
  * Middleware function to handle 404 errors.

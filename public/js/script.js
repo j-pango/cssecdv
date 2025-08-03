@@ -18,13 +18,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Check if `isAdmin` is correctly read from localStorage
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    console.log('isAdmin:', isAdmin); 
+    const userRole = localStorage.getItem('userRole');
+    const hasAdminAccess = isAdmin || userRole === 'Administrator';
+    console.log('isAdmin:', isAdmin, 'userRole:', userRole, 'hasAdminAccess:', hasAdminAccess);
 
-    if (isAdmin && !navLinks.querySelector('a[href="/admin"]')) {
+    if (hasAdminAccess && !navLinks.querySelector('a[href="/admin"]')) {
         const adminLink = document.createElement('a');
         adminLink.href = '/admin';
         adminLink.textContent = 'Admin';
         navLinks.appendChild(adminLink);
+    }
+
+    // Add User Management link for Administrators
+    if (userRole === 'Administrator' && !navLinks.querySelector('a[href="/user-management"]')) {
+        const userManagementLink = document.createElement('a');
+        userManagementLink.href = '/user-management';
+        userManagementLink.textContent = 'User Management';
+        navLinks.appendChild(userManagementLink);
     }
 
     let cart = {};
@@ -98,12 +108,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             count += cart[product].inCart;
         }
         
-        console.log('Total products in cart:', count);
         return count;
     }
 
     /**
-     * Updates the shopping cart display with the total number of products.
+     * Updates the cart display with the current cart contents and total count.
      *
      * @function updateCart
      * @returns {void}
@@ -113,12 +122,14 @@ document.addEventListener('DOMContentLoaded', async () => {
      * updateCart();
      *
      * // Example output:
-     * // The cartElement's textContent will be updated to display the total number of products.
-     * // For example, if the cart contains 3 items (2 of 'Product A' and 1 of 'Product B'), the cartElement's textContent will be:
-     * // "Cart: 3 items"
+     * // The cart display will be updated to show the current cart contents and total count.
      */
     function updateCart() {
-        cartElement.textContent = `Cart: ${countProducts()} items`;
+        const count = countProducts();
+        cartElement.textContent = `Cart (${count})`;
+        
+        // Update cart count in localStorage for other pages
+        localStorage.setItem('cartCount', count.toString());
     }
 
         /**
@@ -174,10 +185,19 @@ document.addEventListener('DOMContentLoaded', async () => {
      * ]
      */
     async function getProductsData() {
-        const products = await $.get('/api/products');
-        console.log('Retrieved data for products: ', products);
+        try {
+            const response = await fetch('/api/products');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const products = await response.json();
+            console.log('Retrieved data for products: ', products);
 
-        return products.data;
+            return products.data;
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            return [];
+        }
     }
 
     /**
@@ -239,11 +259,27 @@ document.addEventListener('DOMContentLoaded', async () => {
      * // The products section will be populated with product elements based on the filtered product data.
      */
     function createProducts() {
+        console.log('Creating products...');
+        console.log('Products section:', productsSection);
+        console.log('Products data:', productsData);
+        
+        if (!productsSection || productsSection.length === 0) {
+            console.error('Products section not found');
+            return;
+        }
+        
         productsSection[0].innerHTML = '';   
         const products = filterProductsData();
+        console.log('Filtered products:', products);
+
+        if (products.length === 0) {
+            productsSection[0].innerHTML = '<p>No products available</p>';
+            return;
+        }
 
         // Add products to products section
         products.forEach((product) => {
+            console.log('Creating product:', product);
             const productElement = document.createElement('div');
             productElement.id = productId;
             productElement.className = 'product';
@@ -273,6 +309,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             productsSection[0].appendChild(productElement);
             productId++;
         });
+        
+        console.log('Products created successfully');
     }
 
     function showSlide(index) {

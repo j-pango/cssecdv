@@ -25,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log(result.message);
                 event.target.reset();
 
-                // Store the isAdmin flag in localStorage (or sessionStorage)
+                // Store the role and admin flag in localStorage
+                localStorage.setItem('userRole', result.role);
                 localStorage.setItem('isAdmin', result.isAdmin);
 
                 window.location.href = '/';
@@ -38,21 +39,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    showPassword.addEventListener("click", function() {
-        if(passwordField.type === "password") {
-            passwordField.type = "text";
-            showPassword.classList.remove("fa-eye");
-            showPassword.classList.add("fa-eye-slash");
+    showPassword.addEventListener('click', function() {
+        const passwordInput = document.getElementById('password');
+        const icon = this;
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         } else {
-            passwordField.type = "password";
-            showPassword.classList.remove("fa-eye-slash");
-            showPassword.classList.add("fa-eye");
-        }
-        // if clicked, change the color of the icon to #007bff, and if clicked again, change it back to #e38eda
-        if(showPassword.style.color === "#e38eda") {
-            showPassword.style.color = "#504949";
-        } else {
-            showPassword.style.color = "#e38eda";
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
         }
     });
 });
