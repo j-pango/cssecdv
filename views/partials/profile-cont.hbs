@@ -2,6 +2,15 @@
     <img src="/images/logofinal.png" alt="Logo" class="logo">
     <div id="navbar" class="nav-links"> 
         <a href="/">Home</a>
+        {{#if user}}
+        {{#if (eq user.role "Administrator")}}
+            <a href="/admin">Admin Panel</a>
+            <a href="/user-management">User Management</a>
+        {{/if}}
+        {{#if (eq user.role "Role A")}}
+            <a href="/user-management">User Management</a>
+        {{/if}}
+        {{/if}}
     </div>
     <div class="nav-icons"></div>
         <a href="/profile" class="profile-link">

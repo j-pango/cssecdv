@@ -9,6 +9,15 @@
         {{else}}
         href="#">Logout</a>
         {{/if}}
+        {{#if user}}
+        {{#if (eq user.role "Administrator")}}
+            <a href="/admin">Admin Panel</a>
+            <a href="/user-management">User Management</a>
+        {{/if}}
+        {{#if (eq user.role "Role A")}}
+            <a href="/user-management">User Management</a>
+        {{/if}}
+        {{/if}}
     </div>
     <div class="nav-icons">
         <a href="/cart" class="icon-link">

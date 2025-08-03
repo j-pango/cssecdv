@@ -98,7 +98,7 @@ const loginController = {
                 userAgent: req.get('User-Agent')
             });
         }
-
+        
         req.session.destroy((err) => {
             if(!err) {
                 res.status(200).json({ message: 'Logout successful!' });

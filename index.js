@@ -29,16 +29,33 @@ const PORT = process.env.PORT;
 dotenv.config();
 connectDB();
 
+app.use(session({
+    secret: 'secretkey',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }
+}));
+
 // Middleware
+import { requireAuth, requireAdministrator } from './middleware/auth.js';
+import { requireRoleA } from './middleware/auth.js';
+
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
 app.use(session({
 	secret: 'secretkey',
 	resave: false,
 	saveUninitialized: false,
 	cookie: { secure: false }
 }));
+
 app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'main', runtimeOptions: {allowProtoPropertiesByDefault: true} }));
 app.set('view engine', '.hbs');
 // app.use(
@@ -66,9 +83,11 @@ app.use('/', usersRouter);
 app.use('/', indexRouter);
 app.use('/', cartRouter);
 app.use('/', loginRouter);
-app.use('/', adminRouter);
+app.use('/', requireAuth, requireAdministrator, adminRouter);
+app.use('/', requireAuth, requireRoleA, userManagementRouter);
+// app.use('/', requireAuth, requireAdministrator, adminRouter);
+// app.use('/', requireAuth, requireRoleA, userManagementRouter);
 app.use('/', profileRouter);
-app.use('/', userManagementRouter);
 app.use('/', auditRouter);
 app.use('/', passwordRouter);
 
