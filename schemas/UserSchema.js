@@ -20,7 +20,8 @@ const UserSchema = new mongoose.Schema(
       lastLogin: { type: Date, default: null },
       isAdmin: { type: Boolean, default: false }, // Legacy support for existing isAdmin field
       failedLoginAttempts: { type: Number, required: true, default: 0},
-      lockoutUntil: { type: Date, default: null } // Null means not locked
+      lockoutUntil: { type: Date, default: null }, // Null means not locked
+      passwordLastChanged: { type: Date, default: Date.now }
     },
     { versionKey: false, timestamps: true }
   );

@@ -30,4 +30,35 @@ document.addEventListener('DOMContentLoaded', function() {
             if (cancelOrderForm) cancelOrderForm.style.display = 'block';
         }
     });
+
+    const changePasswordForm = document.getElementById('changePasswordForm');
+    if (changePasswordForm) {
+        changePasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('changePasswordMessage');
+
+            const response = await fetch('/api/password/change', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ currentPassword, newPassword, confirmPassword })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                messageDiv.textContent = result.message;
+                messageDiv.style.color = 'green';
+                changePasswordForm.reset();
+            } else {
+                messageDiv.textContent = result.error;
+                messageDiv.style.color = 'red';
+            }
+        });
+    }
 });

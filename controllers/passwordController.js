@@ -45,11 +45,20 @@ const passwordController = {
                 return res.status(400).json({ error: 'Current password is incorrect' });
             }
 
+            // Check if password can be changed
+            const oneDay = 24 * 60 * 60 * 1000;
+            if (user.passwordLastChanged && (new Date() - new Date(user.passwordLastChanged)) < oneDay) {
+                return res.status(400).json({ error: 'You can only change your password once every 24 hours' });
+            }
+
             // Hash new password
             const hashedNewPassword = await bcrypt.hash(newPassword, 13);
 
             // Update password
-            await User.findByIdAndUpdate(userId, { password: hashedNewPassword });
+            await User.findByIdAndUpdate(userId, {
+                password: hashedNewPassword,
+                passwordLastChanged: new Date()
+            });
 
             res.status(200).json({ message: 'Password changed successfully' });
         } catch (err) {
