@@ -6,10 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
         return; 
     }
 
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    console.log('isAdmin:', isAdmin); 
+    const userRole = localStorage.getItem('userRole');
+    const canAccessOrderStatuses = userRole === 'Administrator' || userRole === 'Role A';
+    console.log('userRole:', userRole);
 
-    if (isAdmin && !navLinks.querySelector('a[href="/admin"]')) {
+    if (userRole === 'Administrator' && !navLinks.querySelector('a[href="/admin"]')) {
         const adminLink = document.createElement('a');
         adminLink.href = '/admin';
         adminLink.textContent = 'Admin';
@@ -22,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const changeStatusForm = orderItem.querySelector('.change-status-form');
         const cancelOrderForm = orderItem.querySelector('.cancel-order-form');
 
-        if (isAdmin) {
+        if (canAccessOrderStatuses) {
             if (changeStatusForm) changeStatusForm.style.display = 'block';
             if (cancelOrderForm) cancelOrderForm.style.display = 'none';
         } else {

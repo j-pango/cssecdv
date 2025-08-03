@@ -19,23 +19,23 @@ const profileController = {
 
             let orders;
 
-            if (userRole === 'Administrator') {
+            if (userRole === 'Administrator' || userRole === 'Role A') {
                 // Administrators can see all orders
                 orders = await OrderSchema.find({ status: { $ne: 'Delivered' } })
                     .populate('shipping')
                     .populate('userId', 'username role');
-            } else if (userRole === 'Role A') {
-                // Role A managers can see orders from their managed users and their own scope
-                const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
-                const managedUserIds = managedUsers.map(user => user._id);
+            // } else if (userRole === 'Role A') {
+            //     // Role A managers can see orders from their managed users and their own scope
+            //     const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
+            //     const managedUserIds = managedUsers.map(user => user._id);
                 
-                orders = await OrderSchema.find({
-                    $or: [
-                        { userId: { $in: managedUserIds } },
-                        { userId: userId }
-                    ],
-                    status: { $ne: 'Delivered' }
-                }).populate('shipping').populate('userId', 'username role');
+            //     orders = await OrderSchema.find({
+            //         $or: [
+            //             { userId: { $in: managedUserIds } },
+            //             { userId: userId }
+            //         ],
+            //         status: { $ne: 'Delivered' }
+            //     }).populate('shipping').populate('userId', 'username role');
             } else {
                 // Role B users can only see their own orders
                 orders = await OrderSchema.find({ userId })
@@ -67,20 +67,20 @@ const profileController = {
 
             let order;
             
-            if (userRole === 'Administrator') {
+            if (userRole === 'Administrator' || userRole === 'Role A') {
                 // Administrators can cancel any order
                 order = await OrderSchema.findById(orderId);
-            } else if (userRole === 'Role A') {
-                // Role A managers can cancel orders from their managed users
-                const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
-                const managedUserIds = managedUsers.map(user => user._id);
+            // } else if (userRole === 'Role A') {
+            //     // Role A managers can cancel orders from their managed users
+            //     const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
+            //     const managedUserIds = managedUsers.map(user => user._id);
                 
-                order = await OrderSchema.findOne({
-                    _id: orderId,
-                    userId: { $in: [...managedUserIds, userId] },
-                    status: 'Pending'
-                });
-            } else {
+            //     order = await OrderSchema.findOne({
+            //         _id: orderId,
+            //         userId: { $in: [...managedUserIds, userId] },
+            //         status: 'Pending'
+            //     });
+            // } else {
                 // Role B users can only cancel their own orders
                 order = await OrderSchema.findOne({
                     _id: orderId,
@@ -118,18 +118,18 @@ const profileController = {
 
             let order;
 
-            if (userRole === 'Administrator') {
+            if (userRole === 'Administrator' || userRole === 'Role A') {
                 // Administrators can change any order status
                 order = await OrderSchema.findById(orderId);
-            } else if (userRole === 'Role A') {
-                // Role A managers can change status of orders from their managed users
-                const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
-                const managedUserIds = managedUsers.map(user => user._id);
+            // } else if (userRole === 'Role A') {
+            //     // Role A managers can change status of orders from their managed users
+            //     const managedUsers = await UserSchema.find({ createdBy: userId }, '_id');
+            //     const managedUserIds = managedUsers.map(user => user._id);
                 
-                order = await OrderSchema.findOne({
-                    _id: orderId,
-                    userId: { $in: [...managedUserIds, userId] }
-                });
+            //     order = await OrderSchema.findOne({
+            //         _id: orderId,
+            //         userId: { $in: [...managedUserIds, userId] }
+            //     });
             } else {
                 // Role B users can only change their own order status
                 order = await OrderSchema.findOne({ _id: orderId, userId });
