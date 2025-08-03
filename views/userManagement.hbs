@@ -13,7 +13,12 @@
             <a href="/">Home</a>
             <a href="/#products">Products</a>
             <a href="/#about-contact">About & Contact</a>
-            <a href="/admin">Admin Panel</a>
+            {{#if user}}
+            {{#if (eq user.role "Administrator")}}
+                <a href="/admin">Admin Panel</a>
+            {{/if}}
+            {{/if}}
+            <a href="/user-management">User Management</a>
         </div>
         <div class="nav-icons">
             <a href="/profile" class="profile-link">

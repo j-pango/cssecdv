@@ -4,8 +4,8 @@ import { requireAdministrator, requireRoleA, requireAuth } from './../../middlew
 
 const router = express.Router();
 
-// Serve user management page (Administrator only)
-router.get('/user-management', requireAdministrator, (req, res) => {
+// Serve user management page
+router.get('/user-management', requireRoleA, (req, res) => {
     res.render('userManagement');
 });
 
