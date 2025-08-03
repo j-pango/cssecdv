@@ -10,9 +10,9 @@ const profileController = {
             if (!req.session.user) {
                 return res.status(401).redirect('/login');
             }
-            const userId = req.session.user._id; 
-            const userRole = req.session.user.role;
-            const assignedScope = req.session.user.assignedScope;
+            const userId = req.session.user._id;
+            const user = await UserSchema.findById(userId);
+            const userRole = user.role;
             
             console.log('User ID from session:', userId);
             console.log('User Role:', userRole);
@@ -44,10 +44,10 @@ const profileController = {
 
             console.log('Orders:', orders);
 
-            res.status(200).render('profile', { 
-                user: req.session.user, 
+            res.status(200).render('profile', {
+                user: user,
                 orders,
-                userRole: req.session.user.role
+                userRole: user.role
             });
         } catch (err) {
             console.error(err.message);
