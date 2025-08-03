@@ -3,7 +3,7 @@ import utils from './utils.js';
 document.addEventListener('DOMContentLoaded', function() {
     // Check if user is Administrator
     const userRole = localStorage.getItem('userRole');
-    if (userRole !== 'Administrator') {
+    if (userRole !== 'Administrator' && userRole !== 'Role A') {
         window.location.href = '/';
         return;
     }

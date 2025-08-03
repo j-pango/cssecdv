@@ -49,13 +49,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use(session({
-	secret: 'secretkey',
-	resave: false,
-	saveUninitialized: false,
-	cookie: { secure: false }
-}));
-
 app.engine('.hbs', exphbs.engine({ extname: '.hbs', defaultLayout: 'main', runtimeOptions: {allowProtoPropertiesByDefault: true} }));
 app.set('view engine', '.hbs');
 // app.use(
@@ -83,13 +76,11 @@ app.use('/', usersRouter);
 app.use('/', indexRouter);
 app.use('/', cartRouter);
 app.use('/', loginRouter);
-app.use('/', requireAuth, requireAdministrator, adminRouter);
-app.use('/', requireAuth, requireRoleA, userManagementRouter);
-// app.use('/', requireAuth, requireAdministrator, adminRouter);
-// app.use('/', requireAuth, requireRoleA, userManagementRouter);
-app.use('/', profileRouter);
 app.use('/', auditRouter);
 app.use('/', passwordRouter);
+app.use('/admin', requireAuth, requireAdministrator, adminRouter);
+app.use('/user-management', requireAuth, requireRoleA, userManagementRouter);
+app.use('/profile', requireAuth, profileRouter);
 
 /**
  * Middleware function to handle 404 errors.
