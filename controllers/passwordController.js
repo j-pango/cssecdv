@@ -50,9 +50,26 @@ const passwordController = {
             if (user.passwordLastChanged && (new Date() - new Date(user.passwordLastChanged)) < oneDay) {
                 return res.status(400).json({ error: 'You can only change your password once every 24 hours' });
             }
+					
+						// Check if password has been used previously
+						for (var i = 0; i < user.oldPasswords.length; i++) {
+								var isNewPasswordOldPassword = await bcrypt.compare(newPassword, user.oldPasswords[i]);
+								if (!isNewPasswordOldPassword) {
+										return res.status(400).json({ error: 'Password violates password policy'});
+								}
+						}
+					
+						// For garbage collection
+						var i = null;
+						var isNewPasswordOldPassword = null;
 
             // Hash new password
             const hashedNewPassword = await bcrypt.hash(newPassword, 13);
+						
+						// Add old password to array
+						await User.findByIdAndUpdate(userId, {
+								$push: { oldPasswords: user.password }
+						});
 
             // Update password
             await User.findByIdAndUpdate(userId, {
