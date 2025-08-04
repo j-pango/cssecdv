@@ -46,10 +46,10 @@ const passwordController = {
             }
 
             // Check if password can be changed
-            /*const oneDay = 24 * 60 * 60 * 1000;
+            const oneDay = 24 * 60 * 60 * 1000;
             if (user.passwordLastChanged && (new Date() - new Date(user.passwordLastChanged)) < oneDay) {
                 return res.status(400).json({ error: 'You can only change your password once every 24 hours' });
-            }*/
+            }
 					
 						// Check if password has been used previously
 						for (var i = 0; i < user.oldPasswords.length; i++) {
@@ -59,6 +59,9 @@ const passwordController = {
 								}
 						}
 					
+						// For garbage collection
+						var i = null;
+						var isNewPasswordOldPassword = null;
 
             // Hash new password
             const hashedNewPassword = await bcrypt.hash(newPassword, 13);
